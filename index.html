@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrating REST api</title>
+</head>
+<body>
+    <form onsubmit="saveToLocalStorage(event)">
+    <label for="price">Choose Price:</label>
+    <input type="number" name="price" id="num1">
+    <label for="dish">Choose Dish:</label>
+    <select name="dish" id="dish1">
+        <option value="Chicken Biryani">Chicken Biryani</option>
+        <option value="Chicken Kabab">Chicken Kabab</option>
+        <option value="Paneer Handi">Paneer Handi</option>
+        <option value="Mattar Panee">Mattar Paneer</option>
+        <option value="Mushroom Gravy">Mushroom Gravy</option>
+    </select>
+    <label for="table">Choose a Table:</label>
+    <select name="table" id="tab1">
+        <option value="Table 1">Table 1</option>
+        <option value="Table 2">Table 2</option>
+        <option value="Table 3">Table 3</option>
+    </select>
+    <button>Add to Bill</button>
+    </form>
+    <h2>Table 1</h2><br><br>
+    <h2>Table 2</h2><br><br>
+    <h2>Table 3</h2><br><br>
+
+    <ul id="listOfOrder"></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+
+    <script>
+        function saveToLocalStorage(event){
+            event.preventDefault();
+
+            const price = event.target.price.value;
+            const dish = event.target.dish.value;
+            const table = event.target.table.value;
+            
+            let obj = {
+                price: price,
+                dish: dish,
+                table: table
+            }
+            // showOrderOnScreen(obj);
+
+            axios
+            .post("https://crudcrud.com/api/e568e1c0d8c14ee0932065fcf4d45a4b/listOfOrder", obj)
+            .then((res) => {
+                showOrderOnScreen(res.data)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+        }
+
+        function showOrderOnScreen(obj){
+            const parentEle = document.getElementById('listOfOrder');
+            const childEle = document.createElement('li');
+            childEle.textContent = obj.price + '-' + obj.dish + '-' + obj.table;
+            parentEle.appendChild(childEle);
+
+            const deletebtn = document.createElement('input');
+            deletebtn.type = "button";
+            deletebtn.value = "Delete";
+            deletebtn.onclick = () => {
+                parentEle.removeChild(childEle)
+            }
+            childEle.appendChild(deletebtn);
+            
+        }
+        
+    </script>
+</body>
+</html>
